@@ -1,0 +1,16 @@
+在python中，span()是re模块中的一个函数，它用于在字符串中搜索模式并返回匹配的起始和结束位置。
+
+假设我们有一个字符串"Hello World"，并希望在该字符串中搜索"World"这个单词。我们可以使用span()函数来搜索该单词，并返回它在字符串中的起始位置和结束位置。
+
+例子：
+import restring = "Hello World"
+pattern = "World"
+
+match = re.search(pattern, string)
+
+if match:
+	print(match.span())
+
+#(6, 11)
+
+

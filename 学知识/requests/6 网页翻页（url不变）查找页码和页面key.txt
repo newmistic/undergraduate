@@ -1,0 +1,6 @@
+右键检查  —>  元素  —>  <body>  —>  <div class="content">  —>  <!-- 查询条件开始 -->  —>  
+
+name="page.pageNo"            当前页数
+name="tempReportKey"        换页码的key
+
+

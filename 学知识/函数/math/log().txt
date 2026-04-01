@@ -1,0 +1,27 @@
+Python math.log(x) 方法使用一个参数，返回 x 的自然对数（底为 e ）。
+
+语法：
+math.log(x[, base])
+
+参数说明：
+x -- 必需，数字。  如果 x 不是一个数字，返回 TypeError。如果值为 0 或负数，则返回 ValueError。
+base -- 可选，底数，默认为 e。
+
+返回值：
+返回一个整数浮点数 float，表示一个数字的自然对数。
+
+
+
+实例：
+# 导入 math 包
+import math
+# 输出一个数字的自然对数
+print(math.log(2.7183))
+print(math.log(2))
+print(math.log(1))
+
+输出结果：
+1.0000066849139877
+0.6931471805599453
+0.0
+

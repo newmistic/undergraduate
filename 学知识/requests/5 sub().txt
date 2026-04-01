@@ -1,0 +1,15 @@
+sub(pat, repl, string[, count = 0]) 将字符串中所有pat的匹配项用repl替换
+
+sub(replacement, string[, count = 0])
+
+replace:被替换成的文本
+stirng:需要被替换的文本
+count:一个可选参数，指最大被替换的数量。count必须是非负整数，缺省值是0表示替换所有的匹配
+
+import  re
+p = re.compile('(blue|white|red)')
+print(p.sub('colour', 'blue socks and red shoes'))
+print(p.sub('colour', 'blue socks and red shoes', count = 1))
+输出：
+colour socks and colour shoes
+colour socks and red shoes

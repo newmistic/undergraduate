@@ -1,0 +1,17 @@
+https://www.python100.com/html/DXS3C68HN547.html
+
+
+【1】f-string格式化：
+
+name = 'john'
+age = 26
+print(f'{name: >10}: {age: >5}')
+
+运行结果：
+	john:	26
+
+
+【2】format()方法：
+
+string = "Hello, world!"
+print("{:>20}".format(string))
