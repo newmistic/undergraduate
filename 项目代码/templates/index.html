@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlgoTradingAgents</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('/static/images/background.png'); /* 设置背景图片 */
+            background-size: cover; /* 覆盖整个背景区域 */
+            background-repeat: no-repeat; /* 不重复 */
+            background-attachment: fixed; /* 固定背景，不随滚动条移动 */
+            background-position: center center; /* 图片居中 */
+            /* background: linear-gradient(120deg, #f6d365 0%, #fda085 100%); */ /* 注释掉原来的渐变背景 */
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+        }
+        .center-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border: none;
+            background: rgba(255,255,255,0.95);
+        }
+        #conversationBox {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 200px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .agent-msg, .user-msg {
+            border-radius: 18px;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            max-width: 80%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            font-size: 1.05rem;
+        }
+        .agent-msg {
+            background: #e3f0ff;
+            color: #007bff;
+            border-radius: 18px 18px 18px 0;
+        }
+        .user-msg {
+            background: #e6ffe3;
+            color: #28a745;
+            border-radius: 18px 18px 0 18px;
+            margin-left: auto;
+            text-align: right;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .result-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .download-section {
+            margin-top: 24px;
+            text-align: center;
+        }
+        .download-btn {
+            margin: 6px 8px 6px 0;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 8px 22px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .download-btn:hover {
+            background: #007bff;
+            color: #fff;
+        }
+        .form-control, .btn, .progress, .progress-bar {
+            border-radius: 18px !important;
+            font-size: 1.08rem;
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        h1, h5, h6, .card-title {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .progress {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="center-container">
+        <div class="container" style="max-width: 800px;">
+            <h1 class="text-center mb-4">AlgoTradingAgents</h1>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="analysisForm">
+                                <div class="mb-3">
+                                    <label for="stockCodes" class="form-label">请输入股票代码（用逗号分隔，如 000001,600519,002304）</label>
+                                    <input type="text" class="form-control" id="stockCodes" name="stock_codes" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="riskPreference" class="form-label">请选择投资偏好</label>
+                                    <select class="form-control" id="riskPreference" name="risk_preference">
+                                        <option value="保守">保守型</option>
+                                        <option value="中等" selected>中等型</option>
+                                        <option value="激进">激进型</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="investmentHorizon" class="form-label">请选择投资期限</label>
+                                    <select class="form-control" id="investmentHorizon" name="investment_horizon">
+                                        <option value="短期">短期（1-3个月）</option>
+                                        <option value="中期">中期（3-12个月）</option>
+                                        <option value="长期" selected>长期（1年以上）</option>
+                                    </select>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">开始分析</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="loading" class="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">分析中，请耐心等待...</p>
+                    </div>
+                    <!-- 进度条和步骤描述区 -->
+                    <div id="progressWrapper" style="margin-bottom:18px;">
+                        <div class="progress" style="height: 22px; border-radius: 14px;">
+                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; border-radius: 14px; font-weight:600; font-size:1rem;">0%</div>
+                        </div>
+                        <ul id="progressSteps" style="list-style:none; padding-left:0; margin-top:16px;">
+                            <!-- 步骤项将由JS动态生成 -->
+                        </ul>
+                    </div>
+
+                    <div id="resultSection" class="result-section">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">分析结果</h5>
+                                <div id="analysisResult"></div>
+                                
+                                <div class="download-section">
+                                    <h6>下载分析报告：</h6>
+                                    <div id="downloadButtons"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 当前前端代码版本，用于调试
+        const APP_VERSION = "1.0.3"; 
+
+        let eventSource = null;
+
+        // 步骤数组
+        const progressStepNames = [
+            '分析师团队进行股票分析',
+            '投资经理制定初始投资建议',
+            '风险分析师进行风险分析',
+            '投资经理根据风险报告优化投资建议',
+            '生成投资组合预期调整方案'
+        ];
+        let progressCompleted = 0;
+        let progressFlags = Array(progressStepNames.length).fill(false);
+
+        // 渲染当前步骤
+        function renderCurrentStep() {
+            const progressSteps = document.getElementById('progressSteps');
+            if (!progressSteps) return; // Defensive check
+            progressSteps.innerHTML = '';
+            // 找到第一个未完成的步骤
+            let currentIdx = progressFlags.findIndex(flag => !flag);
+            if (currentIdx === -1) currentIdx = progressStepNames.length - 1; // 全部完成时显示最后一步
+            if (currentIdx >= 0 && currentIdx < progressStepNames.length) {
+                const li = document.createElement('li');
+                li.id = 'step-current';
+                li.innerHTML = `<span style="display:inline-block;width:22px;text-align:center;font-size:1.2em;">→</span> <span style="font-size:1.15em;font-weight:700;">${progressStepNames[currentIdx]}</span>`;
+                li.style.padding = '8px 0';
+                li.style.color = '#007bff';
+                progressSteps.appendChild(li);
+            }
+        }
+
+        // 完成某一步
+        function completeStep(stepName) {
+            const idx = progressStepNames.indexOf(stepName);
+            if (idx !== -1 && !progressFlags[idx]) {
+                progressFlags[idx] = true;
+                progressCompleted = progressFlags.filter(Boolean).length;
+                // 只渲染当前步骤
+                renderCurrentStep();
+                // 更新进度条
+                const progressBar = document.getElementById('progressBar');
+                if (progressBar) {
+                    const percent = Math.round((progressCompleted / progressStepNames.length) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressBar.textContent = percent + '%';
+                }
+            }
+        }
+
+        // 初始化进度条和步骤
+        function initProgressBar() {
+            progressCompleted = 0;
+            progressFlags = Array(progressStepNames.length).fill(false);
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+                progressBar.textContent = '0%';
+            }
+            renderCurrentStep();
+        }
+
+        // --- 将所有主逻辑包装在 DOMContentLoaded 事件中 --- //
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('analysisForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const stockCodesRaw = document.getElementById('stockCodes').value;
+                const stockCodes = stockCodesRaw.split(',').map(s => s.trim()).filter(Boolean);
+                const riskPreference = document.getElementById('riskPreference').value;
+                const investmentHorizon = document.getElementById('investmentHorizon').value;
+                const loading = document.getElementById('loading');
+                const resultSection = document.getElementById('resultSection');
+                
+                // 初始化进度条和步骤
+                initProgressBar();
+                // 显示加载状态
+                loading.style.display = 'block';
+                resultSection.style.display = 'none';
+                if (eventSource) eventSource.close();
+                
+                try {
+                    console.log('开始发送 /analyze 请求...');
+                    // 发送分析请求
+                    const response = await fetch('/analyze', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `stock_codes=${encodeURIComponent(stockCodesRaw)}&risk_preference=${encodeURIComponent(riskPreference)}&investment_horizon=${encodeURIComponent(investmentHorizon)}`
+                    });
+                    
+                    console.log('收到 /analyze 响应，状态码:', response.status);
+                    const data = await response.json();
+                    console.log('/analyze 响应数据:', data);
+                    
+                    if (data.error) {
+                        alert(data.error);
+                        loading.style.display = 'none';
+                        return;
+                    }
+                    
+                    // 开始SSE流
+                    console.log('开始连接 SSE 流...');
+                    eventSource = new EventSource('/stream');
+                    eventSource.onmessage = function(e) {
+                        if (!e.data) return;
+                        let content = e.data;
+                        if (e.data.includes('|||')) {
+                            const parts = e.data.split('|||');
+                            if (parts.length === 2) {
+                                content = parts[1]; // Extract content for progress check
+                            } else {
+                                console.warn('SSE message with unexpected format:', e.data);
+                            }
+                        }
+                        // 检查是否为进度步骤
+                        for (let i = 0; i < progressStepNames.length; i++) {
+                            if (content.trim() === progressStepNames[i]) {
+                                completeStep(progressStepNames[i]);
+                                break; // Stop checking after a match
+                            }
+                        }
+                    };
+                    
+                    // 轮询分析状态
+                    console.log('开始轮询分析状态...');
+                    checkStatus();
+                    
+                } catch (error) {
+                    console.error('Error during analysis request:', error);
+                    alert('发生错误，请重试');
+                    loading.style.display = 'none';
+                }
+            });
+
+            function checkStatus() {
+                fetch('/check_status')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'processing') {
+                            // 更新进度显示
+                            if (data.progress) {
+                                const progress = data.progress;
+                                const progressBar = document.getElementById('progressBar');
+                                if (progressBar) {
+                                    const percent = Math.round((progress.progress / progress.total) * 100);
+                                    progressBar.style.width = percent + '%';
+                                    progressBar.textContent = percent + '%';
+                                }
+                                
+                                // 更新当前步骤
+                                const currentStep = document.getElementById('step-current');
+                                if (currentStep) {
+                                    currentStep.innerHTML = `<span style="display:inline-block;width:22px;text-align:center;font-size:1.2em;">→</span> <span style="font-size:1.15em;font-weight:700;">${progress.step}</span>`;
+                                }
+                            }
+                            // 继续轮询
+                            setTimeout(checkStatus, 1000);
+                        } else {
+                            if (eventSource) eventSource.close();
+                            // 显示结果
+                            displayResults(data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert(`检查状态时发生错误 (v${APP_VERSION})`);
+                        document.getElementById('loading').style.display = 'none';
+                    });
+            }
+
+            function displayResults(data) {
+                const loading = document.getElementById('loading');
+                const resultSection = document.getElementById('resultSection');
+                const analysisResult = document.getElementById('analysisResult');
+                const downloadButtons = document.getElementById('downloadButtons');
+                
+                loading.style.display = 'none';
+                if (resultSection) {
+                    resultSection.style.display = 'block';
+                }
+
+                if (!data.success) {
+                    if (analysisResult) {
+                        analysisResult.innerHTML = `<div class="alert alert-danger">分析失败：${data.message}</div>`;
+                    } else {
+                        alert(`分析失败: ${data.message || '未知错误，无法显示结果区域'}`);
+                    }
+                    return;
+                }
+                
+                // 显示分析结果
+                let resultHtml = `
+                    <div class="alert alert-success">分析完成！</div>
+                    <p>分析股票数量: ${data.analyzed_stocks ? data.analyzed_stocks.length : 0}</p>
+                `;
+
+                if (analysisResult) {
+                    analysisResult.innerHTML = resultHtml;
+                }
+                
+                // 动态生成下载按钮
+                let downloadHtml = '';
+                if (data.download_files) {
+                    // 基本面分析
+                    if (data.download_files.fundamental) {
+                        data.download_files.fundamental.forEach(path => {
+                            const filename = path.split(/[\\/]/).pop();
+                            downloadHtml += `<a href="/download_file?path=${encodeURIComponent(path)}" class="btn btn-outline-primary download-btn" download="${filename}">下载${filename}</a>`;
+                        });
+                    }
+                    // 舆情分析
+                    if (data.download_files.news) {
+                        data.download_files.news.forEach(path => {
+                            const filename = path.split(/[\\/]/).pop();
+                            downloadHtml += `<a href="/download_file?path=${encodeURIComponent(path)}" class="btn btn-outline-success download-btn" download="${filename}">下载${filename}</a>`;
+                });
+                    }
+                    // PPO/投资组合调整建议
+                    if (data.download_files.ppo) {
+                        const path = data.download_files.ppo;
+                        const filename = path.split(/[\\/]/).pop();
+                        downloadHtml += `<a href="/download_file?path=${encodeURIComponent(path)}" class="btn btn-outline-info download-btn" download="${filename}">下载投资组合调整建议</a>`;
+                    }
+                }
+                if (downloadButtons) {
+                    downloadButtons.innerHTML = downloadHtml;
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

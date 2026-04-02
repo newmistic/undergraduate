@@ -1,0 +1,26 @@
+{
+  "stock_code": "002304",
+  "risk_level": "中风险",
+  "overall_risk_score": 5,
+  "technical_risks": {
+    "trend_risk": "短期趋势向上，MA5上穿MA20形成金叉，但RSI处于中性区域(50.48)，显示动能不足",
+    "support_resistance_risk": "当前价格接近近期高点，面临一定阻力位压力",
+    "technical_indicators_risk": "KDJ指标显示超买信号(K值75.62>70)，MACD柱状图扩大但动能持续性存疑"
+  },
+  "quantitative_risks": {
+    "volatility_risk": "年化波动率18.26%显示中等波动性，但负偏度(-0.62)和高峰度(6.4)显示极端下跌风险",
+    "max_drawdown": -2.7302330479615997,
+    "var_risk": "5% VaR为1.834显示日内下跌风险可控，但CVaR 3.044显示尾部风险较大",
+    "sharpe_ratio": -0.05475759055981482
+  },
+  "risk_warnings": [
+    "负夏普比率(-0.055)显示风险调整后收益为负",
+    "高峰度显示价格可能出现极端波动",
+    "KDJ超买信号提示短期回调风险"
+  ],
+  "risk_management_suggestions": [
+    "建议设置止损位在MA20(66.10)下方3%处",
+    "可考虑在RSI超过60时部分获利了结",
+    "建议仓位控制在总资金的5%以内以应对波动风险"
+  ]
+}

@@ -1,0 +1,40 @@
+# 核心依赖 - 这些是项目运行必需的
+# ========= 版本兼容组合选项 =========
+
+# OpenAI和AutoGen相关
+openai # 新版API，需要与pyautogen兼容
+pyautogen # 需要Rust编译，与新版openai兼容
+
+# 选项3：最小依赖（仅基本功能）
+requests # 用于API请求
+
+# 数据处理 - 这些是处理金融数据必需的
+pandas
+numpy
+
+# 数据可视化
+matplotlib # 用于绘图
+
+# 金融数据源
+akshare
+py-mini-racer # akshare依赖项
+
+# CLI和开发工具
+setuptools
+wheel
+
+# typing相关
+typing_extensions # 确保版本兼容
+
+# 中文拼音转换
+pypinyin
+
+# 测试相关依赖
+pytest # 测试框架
+pytest-cov # 测试覆盖率
+pytest-mock  # 模拟对象
+
+# 新增依赖
+flask
+autogen
+torch

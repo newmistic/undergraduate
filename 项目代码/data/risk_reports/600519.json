@@ -1,0 +1,24 @@
+{
+  "stock_code": "600519",
+  "risk_level": "中风险",
+  "overall_risk_score": 6,
+  "technical_risks": {
+    "trend_risk": "股价近期呈现反弹趋势，但MA5仍低于MA20，显示短期趋势尚未完全转强",
+    "support_resistance_risk": "当前价格接近MA20(1437.45)阻力位，突破可能面临压力",
+    "technical_indicators_risk": "RSI(30.94)显示超卖区域反弹，KDJ指标金叉向上但K值(58.29)尚未进入超买区，MACD转正显示动能改善"
+  },
+  "quantitative_risks": {
+    "volatility_risk": "年化波动率20.98%显示中等波动性",
+    "max_drawdown": -4.963729188442396,
+    "var_risk": "5% VaR为1.90%，显示日内下跌风险可控",
+    "sharpe_ratio": null
+  },
+  "risk_warnings": [
+    "股价仍处于近期下跌通道中，需警惕MA20阻力位的压制作用",
+    "峰度8.32显示价格分布具有尖峰特征，可能出现极端波动"
+  ],
+  "risk_management_suggestions": [
+    "建议在突破MA20确认后再考虑建仓，设置止损在近期低点1392附近",
+    "可采用分批建仓策略控制单次风险暴露，仓位控制在5%以内"
+  ]
+}

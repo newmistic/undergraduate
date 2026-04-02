@@ -1,0 +1,27 @@
+{
+  "initial_decisions": [
+    {
+      "stock_code": "000001",
+      "action": "BUY",
+      "weight": 0.6,
+      "confidence": 0.8,
+      "reasoning": "平安银行基本面稳健，估值处于历史低位，零售转型和科技赋能构成核心竞争力。市场情绪偏积极，短期催化剂包括中报非息收入增速和资产质量指标。目标PB看至0.7倍，对应股价约15.5元，有25%上涨空间。",
+      "target_price": 15.5,
+      "stop_loss": 11.0
+    },
+    {
+      "stock_code": "600519",
+      "action": "HOLD",
+      "weight": 0.4,
+      "confidence": 0.7,
+      "reasoning": "贵州茅台基本面优质，财务指标和行业地位显著优于同业。短期股价在1400元附近企稳，但市场情绪中性，缺乏明确催化剂。长期品牌壁垒和提价能力支撑业绩稳定性，建议持有观望。",
+      "target_price": 1600,
+      "stop_loss": 1350
+    }
+  ],
+  "portfolio_summary": {
+    "total_stocks": 2,
+    "expected_return": "中等偏高",
+    "investment_strategy": "侧重平安银行的低估值修复和零售转型机会，同时持有贵州茅台以平衡组合风险。"
+  }
+}

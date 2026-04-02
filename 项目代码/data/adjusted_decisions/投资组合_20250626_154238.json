@@ -1,0 +1,29 @@
+{
+  "adjusted_decisions": [
+    {
+      "stock_code": "000001",
+      "action": "SELL",
+      "weight": 0.0,
+      "confidence": 0.6,
+      "reasoning": "高风险股票，技术指标显示严重超买且存在数据异常。根据中等风险偏好和长期投资原则，建议回避以避免短期回调风险。异常高的夏普比率和年化收益率数据需要进一步验证。",
+      "target_price": null,
+      "stop_loss": null,
+      "risk_adjustment": "完全移除高风险股票以避免潜在的大幅回撤。等待技术指标回落至合理区间并验证数据准确性后再考虑重新评估。"
+    },
+    {
+      "stock_code": "600519",
+      "action": "BUY",
+      "weight": 0.3,
+      "confidence": 0.75,
+      "reasoning": "中风险股票，基本面优质且具有长期竞争优势。技术指标显示短期可能有反弹动能，适合长期投资者。调整权重至30%以平衡组合风险。",
+      "target_price": 1600.0,
+      "stop_loss": 1350.0,
+      "risk_adjustment": "保持原有目标价和止损价，但降低权重以控制单只股票风险暴露。关注MA20突破作为加仓信号。"
+    }
+  ],
+  "risk_summary": {
+    "portfolio_risk_level": "中低风险",
+    "risk_adjustments_made": "移除高风险股票000001，降低600519权重至30%，剩余70%现金或配置其他低风险资产。",
+    "final_strategy": "专注于优质中风险股票，控制单只股票权重，保持组合分散化。长期持有基本面强劲的行业领导者，容忍短期波动。"
+  }
+}
